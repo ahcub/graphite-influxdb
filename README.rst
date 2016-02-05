@@ -3,33 +3,29 @@ Graphite-InfluxDB
 
 An `InfluxDB`_ 0.9.2 or higher plugin for `Graphite-API`_.
 
-.. image:: https://travis-ci.org/pkittenis/graphite-influxdb.svg?branch=master
-  :target: https://travis-ci.org/pkittenis/graphite-influxdb
-.. image:: https://coveralls.io/repos/pkittenis/graphite-influxdb/badge.png?branch=master
-  :target: https://coveralls.io/r/pkittenis/graphite-influxdb?branch=master
+Install and configure using docker
+-----------------------------------
 
-
-This project is a fork of the excellent `graphite_influxdb <https://github.com/vimeo/graphite-influxdb>`_ finder. Many thanks to Vimeo and the author for open sourcing that work.
-
-It differs from its parent in the following ways:
-
-* Added Memcached integration for caching of InfluxDB data.
-* Removed Graphite-Web support. ``graphite-influxdb`` has poor performance when used with Graphite-Web which cannot do multi fetch. Graphite-Web is not supported by this project - this is a `Graphite-API`_ only plugin.
-* Simplified configuration - only InfluxDB database name for Graphite metric series is required.
-* Removed Elasticsearch get series names caching integration. An HTTP cache in front of the ``graphite-api`` webapp provides better performance at significantly less overhead. See `Varnish caching InfluxDB API`_ section for an example.
-* Strict flake-8 compatibility and code test coverage. This project has **100%** code test coverage.
-* Python 2.6, 2.7 and 3.4 all fully supported with automated testing.
+Using docker is an easy way to get graphite-api + graphite-influx up and running.
+See https://github.com/Dieterbe/graphite-api-influxdb-docker which provides
+a container that has all packages installed to make maximum use of these tools.
 
 Installation
 ------------
 
 ::
 
-  pip install https://github.com/pkittenis/graphite-influxdb/archive/0.5.1-rc1.tar.gz
+  pip install graphite_influxdb
 
-Install memcached library separately if wanting to make use of memcached integration ::
+Use of `memcached` integration is highly recommended for good performance, especially for users with a large number of series in InfluxDB.
 
-  pip install python-memcached
+Install with `memcached` extras option if wanting to make use of memcached integration ::
+
+  pip install graphite_influxdb[memcached]
+
+Similarly, install with statsd extras if wanting to make use of stats integration ::
+
+  pip install graphite_influxdb[memcached,statsd]
 
 
 InfluxDB Graphite metric templates
@@ -44,7 +40,7 @@ InfluxDB Graphite metric templates
    This plugin currently requires that all Graphite metrics paths are stored as a single series.
 
 Templates should be empty in InfluxDB's Graphite plugin configuration. ::
-  
+
   [[graphite]]
     enabled = true
     # templates = []
@@ -86,7 +82,7 @@ Known InfluxDB aggregation functions are defined at ``graphite_influxdb.constant
 Schema-less design
 ------------------
 
-In this project, no per series schema configuration is required, as with `InfluxDB`_.
+No per series schema configuration is required, as with `InfluxDB`_.
 
 Calculated intervals
 --------------------
@@ -118,7 +114,7 @@ The above is the most minimal configuration. There are several optional configur
     finders:
       - graphite_influxdb.InfluxdbFinder
     influxdb:
-       db:   graphite       
+       db:   graphite
        host: localhost # (optional)
        port: 8086 # (optional)
        user: root # (optional)
